@@ -9,6 +9,11 @@ import com.example.libraryapidevjoint.repository.AuthorRepository;
 import com.example.libraryapidevjoint.repository.BookRepository;
 import com.example.libraryapidevjoint.service.BookService;
 import lombok.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,15 +46,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponseDto> getAll() {
-        return bookRepository.findAll().stream()
-                .map(book -> BookResponseDto.builder()
-                        .id(book.getId())
-                        .title(book.getTitle())
-                        .price(book.getPrice())
-                        .authorName(book.getAuthor().getFullName())
-                        .build())
-                .toList();
+    public Page<BookResponseDto> getAll(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(book -> {
+            BookResponseDto response = new BookResponseDto();
+            response.setId(book.getId());
+            response.setTitle(book.getTitle());
+            response.setPrice(book.getPrice());
+            response.setAuthorName(book.getAuthor().getFullName());
+            return response;
+        });
+
     }
 
     @Override

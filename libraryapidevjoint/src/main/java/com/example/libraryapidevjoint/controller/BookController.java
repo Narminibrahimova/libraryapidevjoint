@@ -5,6 +5,7 @@ import com.example.libraryapidevjoint.dto.response.BookResponseDto;
 import com.example.libraryapidevjoint.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,12 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDto>> getAllBooks(){
-        return ResponseEntity.ok(bookService.getAll());
+    public ResponseEntity<Page<BookResponseDto>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy)
+    {
+        return ResponseEntity.ok(bookService.getAll(page, size, sortBy));
     }
 
     @GetMapping("/{id}")
