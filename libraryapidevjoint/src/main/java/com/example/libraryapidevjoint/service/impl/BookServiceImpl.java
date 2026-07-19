@@ -4,6 +4,7 @@ import com.example.libraryapidevjoint.dto.request.BookRequestDto;
 import com.example.libraryapidevjoint.dto.response.BookResponseDto;
 import com.example.libraryapidevjoint.entity.Author;
 import com.example.libraryapidevjoint.entity.Book;
+import com.example.libraryapidevjoint.exception.ResourceNotFoundException;
 import com.example.libraryapidevjoint.repository.AuthorRepository;
 import com.example.libraryapidevjoint.repository.BookRepository;
 import com.example.libraryapidevjoint.service.BookService;
@@ -24,7 +25,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto create(BookRequestDto bookRequestDto) {
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
         Book book =Book.builder()
                 .title(bookRequestDto.getTitle())
                 .price(bookRequestDto.getPrice())
@@ -54,7 +55,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto getById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
         return BookResponseDto.builder()
                 .id(book.getId())
@@ -67,10 +68,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookResponseDto update(Long id, BookRequestDto bookRequestDto) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
 
         book.setTitle(bookRequestDto.getTitle());
         book.setPrice(bookRequestDto.getPrice());
@@ -89,7 +90,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delete(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
         bookRepository.delete(book);
     }
 }
