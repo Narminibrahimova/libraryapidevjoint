@@ -17,7 +17,7 @@ public class Book {
     Long id;
     String title;
     double price;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     Author author;
 }

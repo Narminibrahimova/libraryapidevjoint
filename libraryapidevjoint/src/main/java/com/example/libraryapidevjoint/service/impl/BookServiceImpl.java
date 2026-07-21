@@ -5,6 +5,7 @@ import com.example.libraryapidevjoint.dto.response.BookResponseDto;
 import com.example.libraryapidevjoint.entity.Author;
 import com.example.libraryapidevjoint.entity.Book;
 import com.example.libraryapidevjoint.exception.ResourceNotFoundException;
+import com.example.libraryapidevjoint.mapper.BookMapper;
 import com.example.libraryapidevjoint.repository.AuthorRepository;
 import com.example.libraryapidevjoint.repository.BookRepository;
 import com.example.libraryapidevjoint.service.BookService;
@@ -26,51 +27,30 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
+    private final BookMapper bookMapper;
 
     @Override
     public BookResponseDto create(BookRequestDto bookRequestDto) {
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
-        Book book =Book.builder()
-                .title(bookRequestDto.getTitle())
-                .price(bookRequestDto.getPrice())
-                .author(author)
-                .build();
+        Book book = bookMapper.toEntity(bookRequestDto);
+        book.setAuthor(author);
         Book savedBook = bookRepository.save(book);
-        return BookResponseDto.builder()
-                .id(savedBook.getId())
-                .title(savedBook.getTitle())
-                .price(savedBook.getPrice())
-                .authorName(savedBook.getAuthor().getFullName())
-                .build();
+        return bookMapper.toDto(savedBook);
     }
 
     @Override
     public Page<BookResponseDto> getAll(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(book -> {
-            BookResponseDto response = new BookResponseDto();
-            response.setId(book.getId());
-            response.setTitle(book.getTitle());
-            response.setPrice(book.getPrice());
-            response.setAuthorName(book.getAuthor().getFullName());
-            return response;
-        });
-
+        return books.map(bookMapper::toDto);
     }
 
     @Override
     public BookResponseDto getById(Long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-
-        return BookResponseDto.builder()
-                .id(book.getId())
-                .title(book.getTitle())
-                .price(book.getPrice())
-                .authorName(book.getAuthor().getFullName())
-                .build();
+        return bookMapper.toDto(book);
     }
 
     @Override
@@ -81,18 +61,10 @@ public class BookServiceImpl implements BookService {
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
 
-        book.setTitle(bookRequestDto.getTitle());
-        book.setPrice(bookRequestDto.getPrice());
+        bookMapper.updateEntity(bookRequestDto, book);
         book.setAuthor(author);
-
         Book updatedBook = bookRepository.save(book);
-
-        return BookResponseDto.builder()
-                .id(updatedBook.getId())
-                .title(updatedBook.getTitle())
-                .price(updatedBook.getPrice())
-                .authorName(updatedBook.getAuthor().getFullName())
-                .build();
+        return bookMapper.toDto(updatedBook);
     }
 
     @Override

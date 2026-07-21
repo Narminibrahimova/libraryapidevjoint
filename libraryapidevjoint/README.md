@@ -9,11 +9,13 @@ This project is a simple Library Management REST API developed using Spring Boot
 * Layered Architecture (Controller → Service → Repository)
 * CRUD Operations
 * DTO Pattern
+* MapStruct Mapping
 * Input Validation
 * Global Exception Handling
 * Pagination & Sorting
 * Swagger/OpenAPI Documentation
 * Unit Testing (JUnit 5 & Mockito)
+* Environment Variables for Database Configuration
 
 
 ## Technologies
@@ -27,8 +29,6 @@ This project is a simple Library Management REST API developed using Spring Boot
 * Spring Validation
 * Swagger/OpenAPI
 
-
-
 ## Database Configuration
 
 Create a PostgreSQL database named:
@@ -37,23 +37,27 @@ Create a PostgreSQL database named:
 library_db
 ```
 
+Configure the following environment variables before running the application:
+
+```text
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/library_db
+SPRING_DATASOURCE_USERNAME=your_username
+SPRING_DATASOURCE_PASSWORD=your_password
+```
+
 Example `application.yml`:
 
 ```yaml
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/library_db
-    username: your_username
-    password: your_password
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
 ```
 
 
@@ -61,10 +65,9 @@ springdoc:
 
 1. Clone the repository.
 2. Create a PostgreSQL database named `library_db`.
-3. Configure the `application.yml` file.
+3. Configure the required environment variables.
 4. Run the Spring Boot application.
 5. Open Swagger UI in your browser.
-
 
 
 ## Swagger/OpenAPI
