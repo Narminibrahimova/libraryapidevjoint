@@ -61,6 +61,20 @@ spring:
 ```
 
 
+### Authentication
+Implemented JWT-based authentication using Spring Security.
+
+Features:
+- User registration
+- User login
+- Password hashing with BCrypt
+- JWT token generation
+- CustomUserDetails and CustomUserDetailsService
+- Stateless authentication
+- Role entity instead of enum for future extensibility
+- DTO mapping using MapStruct
+
+
 ## How to Run
 
 1. Clone the repository.
