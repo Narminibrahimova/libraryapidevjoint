@@ -3,6 +3,7 @@ package com.example.libraryapidevjoint.controller;
 import com.example.libraryapidevjoint.dto.request.LoginRequestDto;
 import com.example.libraryapidevjoint.dto.request.RegisterRequestDto;
 import com.example.libraryapidevjoint.dto.response.LoginResponseDto;
+import com.example.libraryapidevjoint.dto.response.RegisterResponseDto;
 import com.example.libraryapidevjoint.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+
     @PostMapping("/register")
-    public ResponseEntity<String> register(
+    public ResponseEntity<RegisterResponseDto> register(
             @Valid @RequestBody RegisterRequestDto request) {
-        authService.register(request);
+        RegisterResponseDto response = authService.register(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body("User registered successfully");
+                .body(response);
     }
 
     @PostMapping("/login")

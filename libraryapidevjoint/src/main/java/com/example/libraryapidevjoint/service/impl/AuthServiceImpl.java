@@ -37,20 +37,20 @@ public class AuthServiceImpl implements AuthService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
 
-  @Override
-  public RegisterResponseDto register(RegisterRequestDto request) {
-      if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-          throw new IllegalArgumentException("Email already exists");
-      }
-    AppUser appUser = userMapper.toEntity(request);
-    Role role = roleRepository.findByName("USER").orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-    appUser.setPassword(passwordEncoder.encode(request.getPassword()));
-    appUser.setRole(role);
-    userRepository.save(appUser);
-    return RegisterResponseDto.builder()
-            .message("User registered successfully")
-            .build();
-  }
+    @Override
+    public RegisterResponseDto register(RegisterRequestDto request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+        AppUser user = userMapper.toEntity(request);
+        Role role = roleRepository.findByName("USER")
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Role not found"));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(role);
+        AppUser savedUser = userRepository.save(user);
+        return userMapper.toResponse(savedUser);
+    }
 
     @Override
     public LoginResponseDto login(LoginRequestDto request) {
