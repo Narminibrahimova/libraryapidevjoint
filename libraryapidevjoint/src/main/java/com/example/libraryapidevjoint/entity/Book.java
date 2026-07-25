@@ -14,7 +14,7 @@ import lombok.*;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+   Long id;
     String title;
     double price;
     @ManyToOne(fetch = FetchType.LAZY)

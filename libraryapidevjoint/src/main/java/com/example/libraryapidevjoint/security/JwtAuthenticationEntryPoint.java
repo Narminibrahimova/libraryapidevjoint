@@ -2,6 +2,7 @@ package com.example.libraryapidevjoint.security;
 
 import com.example.libraryapidevjoint.dto.response.ErrorResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,15 +18,21 @@ import java.time.LocalDateTime;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException)
-            throws IOException, ServletException {
+            throws IOException {
+        Object exception = request.getAttribute("exception");
+        String message = "Authentication required";
+        if (exception instanceof ExpiredJwtException) {
+            message = "JWT token has expired";
+        }
         ErrorResponseDto error = ErrorResponseDto.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                .message("Authentication required")
+                .message(message)
                 .timestamp(LocalDateTime.now())
                 .build();
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
