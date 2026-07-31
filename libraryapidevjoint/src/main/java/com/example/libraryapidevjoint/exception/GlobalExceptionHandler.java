@@ -1,10 +1,13 @@
 package com.example.libraryapidevjoint.exception;
 
+import com.example.libraryapidevjoint.dto.response.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,5 +26,19 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(message);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(
+            IllegalArgumentException ex) {
+        ErrorResponseDto error = ErrorResponseDto.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
     }
 }
