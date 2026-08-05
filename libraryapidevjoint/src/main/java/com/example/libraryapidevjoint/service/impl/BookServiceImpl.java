@@ -86,4 +86,22 @@ public class BookServiceImpl implements BookService {
         }
         bookRepository.deleteById(id);
     }
+
+    @Override
+    public List<BookResponseDto> filterBooks(
+            String title,
+            String author,
+            String category,
+            Double minPrice) {
+
+        List<Book> books = bookRepository.filterBooks(
+                title,
+                author,
+                category,
+                minPrice
+        );
+        return books.stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
 }

@@ -50,4 +50,20 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<BookResponseDto>> filterBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice
+    ) {
+        return ResponseEntity.ok(
+                bookService.filterBooks(
+                        title,
+                        author,
+                        category,
+                        minPrice
+                )
+        );
+    }
 }

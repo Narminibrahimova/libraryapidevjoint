@@ -12,4 +12,11 @@ public interface BookService {
     BookResponseDto getById(Long id);
     BookResponseDto update(Long id, BookRequestDto bookRequestDto);
     void delete(Long id);
+
+    List<BookResponseDto> filterBooks(
+            String title,
+            String author,
+            String category,
+            Double minPrice
+    );
 }
