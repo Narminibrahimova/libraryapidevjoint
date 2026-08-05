@@ -19,4 +19,10 @@ public interface BookService {
             String category,
             Double minPrice
     );
+    List<BookResponseDto> searchBooks(
+            String title,
+            String author,
+            String category,
+            Double minPrice
+    );
 }

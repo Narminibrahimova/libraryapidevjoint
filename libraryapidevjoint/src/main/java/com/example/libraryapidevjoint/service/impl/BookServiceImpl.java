@@ -17,9 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.example.libraryapidevjoint.specification.BookSpecification.*;
 
 
 @Service
@@ -100,6 +103,24 @@ public class BookServiceImpl implements BookService {
                 category,
                 minPrice
         );
+        return books.stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<BookResponseDto> searchBooks(
+            String title,
+            String author,
+            String category,
+            Double minPrice) {
+        Specification<Book> specification =
+                Specification
+                        .where(hasTitle(title))
+                        .and(hasAuthor(author))
+                        .and(hasCategory(category))
+                        .and(hasMinimumPrice(minPrice));
+        List<Book> books = bookRepository.findAll(specification);
         return books.stream()
                 .map(bookMapper::toDto)
                 .toList();

@@ -66,4 +66,22 @@ public class BookController {
                 )
         );
     }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<BookResponseDto>> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minPrice
+    ) {
+        return ResponseEntity.ok(
+                bookService.searchBooks(
+                        title,
+                        author,
+                        category,
+                        minPrice
+                )
+        );
+    }
 }
