@@ -7,6 +7,7 @@ import com.example.libraryapidevjoint.dto.response.LoginResponseDto;
 import com.example.libraryapidevjoint.dto.response.RegisterResponseDto;
 import com.example.libraryapidevjoint.entity.AppUser;
 import com.example.libraryapidevjoint.entity.Role;
+import com.example.libraryapidevjoint.entity.RoleType;
 import com.example.libraryapidevjoint.exception.ResourceNotFoundException;
 import com.example.libraryapidevjoint.mapper.UserMapper;
 import com.example.libraryapidevjoint.repository.RoleRepository;
@@ -43,9 +44,8 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Email already exists");
         }
         AppUser user = userMapper.toEntity(request);
-        Role role = roleRepository.findByName("USER")
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Role not found"));
+        Role role = roleRepository.findByName(RoleType.USER.name())
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(role);
         AppUser savedUser = userRepository.save(user);
