@@ -1,13 +1,12 @@
 package com.example.libraryapidevjoint.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,4 +21,7 @@ public class BookRequestDto {
     double price;
     @NotNull(message = "Author id cannot be null")
     Long authorId;
+
+    @NotEmpty(message = "At least one category must be selected")
+    List<Long> categoryIds;
 }

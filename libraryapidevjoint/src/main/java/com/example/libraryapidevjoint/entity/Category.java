@@ -11,16 +11,15 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "authors")
+@Table(name = "categories")
 @Builder
-public class Author {
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String fullName;
-    String email;
-    String bio;
-    @OneToMany(mappedBy = "author",cascade = CascadeType.ALL,orphanRemoval = true)
-    List<Book> books=new ArrayList<>();
+    @Column(nullable = false,unique = true)
+    String name;
 
+    @ManyToMany(mappedBy = "categories")
+    List<Book> books=new ArrayList<>();
 }

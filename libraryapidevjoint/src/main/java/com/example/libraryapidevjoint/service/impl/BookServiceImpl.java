@@ -4,10 +4,12 @@ import com.example.libraryapidevjoint.dto.request.BookRequestDto;
 import com.example.libraryapidevjoint.dto.response.BookResponseDto;
 import com.example.libraryapidevjoint.entity.Author;
 import com.example.libraryapidevjoint.entity.Book;
+import com.example.libraryapidevjoint.entity.Category;
 import com.example.libraryapidevjoint.exception.ResourceNotFoundException;
 import com.example.libraryapidevjoint.mapper.BookMapper;
 import com.example.libraryapidevjoint.repository.AuthorRepository;
 import com.example.libraryapidevjoint.repository.BookRepository;
+import com.example.libraryapidevjoint.repository.CategoryRepository;
 import com.example.libraryapidevjoint.service.BookService;
 import lombok.*;
 
@@ -19,8 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Getter
-@Setter
+
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -28,13 +29,20 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
     private final BookMapper bookMapper;
+    private final CategoryRepository categoryRepository;
+
 
     @Override
     public BookResponseDto create(BookRequestDto bookRequestDto) {
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
+        List<Category> categories=categoryRepository.findAllById(bookRequestDto.getCategoryIds());
+        if (categories.size()!=bookRequestDto.getCategoryIds().size()) {
+            throw new ResourceNotFoundException("Some categories not found");
+        }
         Book book = bookMapper.toEntity(bookRequestDto);
         book.setAuthor(author);
+        book.setCategories(categories);
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
     }
@@ -60,17 +68,22 @@ public class BookServiceImpl implements BookService {
 
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
-
+        List<Category> categories=categoryRepository.findAllById(bookRequestDto.getCategoryIds());
+        if (categories.size()!=bookRequestDto.getCategoryIds().size()) {
+            throw new ResourceNotFoundException("Some categories not found");
+        }
         bookMapper.updateEntity(bookRequestDto, book);
         book.setAuthor(author);
+        book.setCategories(categories);
         Book updatedBook = bookRepository.save(book);
         return bookMapper.toDto(updatedBook);
     }
 
     @Override
     public void delete(Long id) {
-        Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
-        bookRepository.delete(book);
+        if (!bookRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Book not found");
+        }
+        bookRepository.deleteById(id);
     }
 }
