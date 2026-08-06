@@ -57,4 +57,21 @@ public class BorrowServiceImpl implements BorrowService {
                 borrowRecordRepository.save(borrowRecord);
         return borrowMapper.toDto(savedBorrowRecord);
     }
+
+    @Override
+    @Transactional
+    public BorrowRecordResponseDto returnBook(Long borrowRecordId) {
+        BorrowRecord borrowRecord = borrowRecordRepository.findById(borrowRecordId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Borrow record not found"));
+        if (borrowRecord.getStatus() == BorrowStatus.RETURNED) {
+            throw new IllegalArgumentException("Book is already returned");
+        }
+        borrowRecord.setStatus(BorrowStatus.RETURNED);
+        borrowRecord.setReturnDate(LocalDate.now());
+        borrowRecordRepository.save(borrowRecord);
+        throw new RuntimeException("Rollback test");
+    }
+
+
 }
