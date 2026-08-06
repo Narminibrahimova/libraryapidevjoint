@@ -1,12 +1,16 @@
 package com.example.libraryapidevjoint.repository;
 
 import com.example.libraryapidevjoint.entity.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book,Long>, JpaSpecificationExecutor<Book> {
     List<Book> findByTitleContainingIgnoreCase(String title);
@@ -30,4 +34,11 @@ public interface BookRepository extends JpaRepository<Book,Long>, JpaSpecificati
             @Param("category") String category,
             @Param("minPrice") Double minPrice
     );
+
+
+    @EntityGraph(attributePaths = {"author", "categories"})
+    Page<Book> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"author", "categories"})
+    Optional<Book> findById(Long id);
 }
