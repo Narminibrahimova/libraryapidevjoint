@@ -3,6 +3,9 @@ package com.example.libraryapidevjoint.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,5 +31,7 @@ public class AppUser {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BorrowRecord> borrowRecords = new ArrayList<>();
 
 }

@@ -41,4 +41,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
+
+    @ExceptionHandler(BookAlreadyBorrowedException.class)
+    public ResponseEntity<ErrorResponseDto> handleBookAlreadyBorrowed(
+            BookAlreadyBorrowedException ex) {
+        ErrorResponseDto error = ErrorResponseDto.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
 }

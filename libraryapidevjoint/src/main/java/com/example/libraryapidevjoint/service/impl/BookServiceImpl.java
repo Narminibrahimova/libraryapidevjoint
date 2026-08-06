@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
+    @Transactional
     public BookResponseDto create(BookRequestDto bookRequestDto) {
         Author author = authorRepository.findById(bookRequestDto.getAuthorId())
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
@@ -65,6 +67,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponseDto update(Long id, BookRequestDto bookRequestDto) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
@@ -83,6 +86,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book not found");

@@ -31,4 +31,9 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     List<Category> categories=new ArrayList<>();
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<BorrowRecord> borrowRecords = new ArrayList<>();
+
+
 }
