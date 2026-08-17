@@ -46,8 +46,13 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Email already exists");
         }
         AppUser user = userMapper.toEntity(request);
-        Role role = roleRepository.findByName(RoleType.USER.name())
-                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+        String targetRole = (request.getRoleName() != null && !request.getRoleName().isBlank())
+                ? request.getRoleName().toUpperCase()
+                : RoleType.USER.name();
+
+        Role role = roleRepository.findByName(targetRole)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + targetRole));
+
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(role);
         AppUser savedUser = userRepository.save(user);
