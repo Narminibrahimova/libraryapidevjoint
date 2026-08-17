@@ -56,6 +56,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<BookResponseDto> getAll(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         Page<Book> books = bookRepository.findAll(pageable);
@@ -63,6 +64,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(value = "books", key = "#id")
     public BookResponseDto getById(Long id) {
         Book book = bookRepository.findById(id)
@@ -102,6 +104,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<BookResponseDto> filterBooks(
             String title,
             String author,
@@ -122,6 +125,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<BookResponseDto> searchBooks(
             String title,
             String author,

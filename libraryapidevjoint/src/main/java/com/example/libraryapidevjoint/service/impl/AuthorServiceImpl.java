@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 public class AuthorServiceImpl  implements AuthorService {
     private final AuthorRepository authorRepository;
     @Override
+    @Transactional
     public AuthorResponseDto create(AuthorRequestDto request) {
         Author author = new Author();
         author.setFullName(request.getFullName());
@@ -32,6 +34,7 @@ public class AuthorServiceImpl  implements AuthorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AuthorResponseDto> getAll() {
         List<Author> authors = authorRepository.findAll();
         List<AuthorResponseDto> responses = new ArrayList<>();
@@ -45,6 +48,7 @@ public class AuthorServiceImpl  implements AuthorService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AuthorResponseDto getById(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
@@ -55,6 +59,7 @@ public class AuthorServiceImpl  implements AuthorService {
     }
 
     @Override
+    @Transactional
     public AuthorResponseDto update(Long id, AuthorRequestDto request) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));
@@ -67,6 +72,7 @@ public class AuthorServiceImpl  implements AuthorService {
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Author not found"));

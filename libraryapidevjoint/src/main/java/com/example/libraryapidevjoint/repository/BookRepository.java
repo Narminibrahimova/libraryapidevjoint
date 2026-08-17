@@ -3,6 +3,7 @@ package com.example.libraryapidevjoint.repository;
 import com.example.libraryapidevjoint.entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,6 +19,7 @@ public interface BookRepository extends JpaRepository<Book,Long>, JpaSpecificati
     List<Book> findByPriceGreaterThanEqual(double price);
     List<Book> findByCategoriesNameIgnoreCase(String categoryName);
 
+    @EntityGraph(attributePaths = {"author", "categories"})
     @Query(value = """
    SELECT DISTINCT b
    FROM Book b
@@ -46,10 +48,15 @@ public interface BookRepository extends JpaRepository<Book,Long>, JpaSpecificati
             Pageable pageable
     );
 
+    @Override
+    @EntityGraph(attributePaths = {"author", "categories"})
+    Page<Book> findAll(Specification<Book> spec, Pageable pageable);
 
+    @Override
     @EntityGraph(attributePaths = {"author", "categories"})
     Page<Book> findAll(Pageable pageable);
 
+    @Override
     @EntityGraph(attributePaths = {"author", "categories"})
     Optional<Book> findById(Long id);
 }
