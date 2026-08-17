@@ -31,8 +31,8 @@ public class BorrowServiceImpl implements BorrowService {
 
     @Override
     @Transactional
-    public BorrowRecordResponseDto borrowBook(BorrowBookRequestDto request) {
-        AppUser user = userRepository.findById(request.getUserId())
+    public BorrowRecordResponseDto borrowBook(BorrowBookRequestDto request, Long userId) {
+        AppUser user = userRepository.findById(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
         Book book = bookRepository.findById(request.getBookId())
@@ -75,8 +75,8 @@ public class BorrowServiceImpl implements BorrowService {
         }
         borrowRecord.setStatus(BorrowStatus.RETURNED);
         borrowRecord.setReturnDate(LocalDate.now());
-        borrowRecordRepository.save(borrowRecord);
-        throw new RuntimeException("Rollback test");
+        BorrowRecord savedBorrowRecord = borrowRecordRepository.save(borrowRecord);
+        return borrowMapper.toDto(savedBorrowRecord);
     }
 
 

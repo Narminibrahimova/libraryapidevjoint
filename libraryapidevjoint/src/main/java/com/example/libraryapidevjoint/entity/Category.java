@@ -3,8 +3,8 @@ package com.example.libraryapidevjoint.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +20,7 @@ public class Category {
     @Column(nullable = false,unique = true)
     String name;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "categories")
-    List<Book> books=new ArrayList<>();
+    Set<Book> books = new HashSet<>();
 }

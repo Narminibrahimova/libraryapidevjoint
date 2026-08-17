@@ -1,5 +1,6 @@
 package com.example.libraryapidevjoint.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BorrowBookRequestDto {
-    Long userId;
-    Long bookId;
+    @NotNull(message = "Book id cannot be null")
+    private Long bookId;
 }

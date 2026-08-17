@@ -2,13 +2,16 @@ package com.example.libraryapidevjoint.controller;
 
 import com.example.libraryapidevjoint.dto.request.BorrowBookRequestDto;
 import com.example.libraryapidevjoint.dto.response.BorrowRecordResponseDto;
+import com.example.libraryapidevjoint.security.CustomUserDetails;
 import com.example.libraryapidevjoint.service.BorrowService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +22,7 @@ public class BorrowController {
 
     @Operation(
             summary = "Borrow a book",
-            description = "Creates a borrow record for a user and book"
+            description = "Creates a borrow record for the authenticated user and book"
     )
     @ApiResponses({
             @ApiResponse(
@@ -37,20 +40,19 @@ public class BorrowController {
     })
     @PostMapping
     public ResponseEntity<BorrowRecordResponseDto> borrowBook(
-            @RequestBody BorrowBookRequestDto request) {
+            @Valid @RequestBody BorrowBookRequestDto request,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         BorrowRecordResponseDto response =
-                borrowService.borrowBook(request);
+                borrowService.borrowBook(
+                        request,
+                        userDetails.getAppUser().getId()
+                );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
-
-
-
-
-
 
     @Operation(
             summary = "Return a borrowed book",

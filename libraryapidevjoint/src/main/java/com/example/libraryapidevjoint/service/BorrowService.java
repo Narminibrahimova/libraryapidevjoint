@@ -4,6 +4,6 @@ import com.example.libraryapidevjoint.dto.request.BorrowBookRequestDto;
 import com.example.libraryapidevjoint.dto.response.BorrowRecordResponseDto;
 
 public interface BorrowService {
-    BorrowRecordResponseDto borrowBook(BorrowBookRequestDto request);
+    BorrowRecordResponseDto borrowBook(BorrowBookRequestDto request, Long userId);
     BorrowRecordResponseDto returnBook(Long borrowRecordId);
 }

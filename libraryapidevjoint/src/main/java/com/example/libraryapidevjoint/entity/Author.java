@@ -20,6 +20,7 @@ public class Author {
     String fullName;
     String email;
     String bio;
+    @Builder.Default
     @OneToMany(mappedBy = "author",cascade = CascadeType.ALL,orphanRemoval = true)
     List<Book> books=new ArrayList<>();
 

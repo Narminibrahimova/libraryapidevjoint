@@ -31,6 +31,7 @@ public class AppUser {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BorrowRecord> borrowRecords = new ArrayList<>();
 

@@ -23,6 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static com.example.libraryapidevjoint.specification.BookSpecification.*;
@@ -49,7 +50,7 @@ public class BookServiceImpl implements BookService {
         }
         Book book = bookMapper.toEntity(bookRequestDto);
         book.setAuthor(author);
-        book.setCategories(categories);
+        book.setCategories(new HashSet<>(categories));
         Book savedBook = bookRepository.save(book);
         return bookMapper.toDto(savedBook);
     }
@@ -85,7 +86,7 @@ public class BookServiceImpl implements BookService {
         }
         bookMapper.updateEntity(bookRequestDto, book);
         book.setAuthor(author);
-        book.setCategories(categories);
+        book.setCategories(new HashSet<>(categories));
         Book updatedBook = bookRepository.save(book);
         return bookMapper.toDto(updatedBook);
     }

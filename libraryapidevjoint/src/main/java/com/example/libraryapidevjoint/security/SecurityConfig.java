@@ -3,6 +3,7 @@ package com.example.libraryapidevjoint.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,11 +26,13 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(
-        AuthenticationConfiguration config) throws Exception {
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
@@ -37,7 +40,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                         .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -50,10 +52,26 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/admin/**")
                         .hasAuthority("ADMIN")
-
                         .requestMatchers("/user/**")
                         .hasAnyAuthority("USER", "ADMIN")
-
+                        .requestMatchers(HttpMethod.GET, "/books/**")
+                        .hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/books/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/books/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/books/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/authors/**")
+                        .hasAnyAuthority("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/authors/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/authors/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/authors/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers("/borrow/**")
+                        .hasAnyAuthority("USER", "ADMIN")
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(jwtAuthenticationFilter,

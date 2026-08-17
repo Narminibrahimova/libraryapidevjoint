@@ -11,48 +11,48 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex){
-        ErrorResponse error = new ErrorResponse(ex.getMessage());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleResourceNotFound(
+            ResourceNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(buildError(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex){
+    public ResponseEntity<ErrorResponseDto> handleValidation(
+            MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult()
                 .getFieldError()
                 .getDefaultMessage();
-        ErrorResponse error = new ErrorResponse(message);
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(buildError(HttpStatus.BAD_REQUEST, message));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(
             IllegalArgumentException ex) {
-        ErrorResponseDto error = ErrorResponseDto.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .message(ex.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(error);
+                .body(buildError(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
 
     @ExceptionHandler(BookAlreadyBorrowedException.class)
     public ResponseEntity<ErrorResponseDto> handleBookAlreadyBorrowed(
             BookAlreadyBorrowedException ex) {
-        ErrorResponseDto error = ErrorResponseDto.builder()
-                .status(HttpStatus.CONFLICT.value())
-                .error(HttpStatus.CONFLICT.getReasonPhrase())
-                .message(ex.getMessage())
-                .timestamp(LocalDateTime.now())
-                .build();
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(error);
+                .body(buildError(HttpStatus.CONFLICT, ex.getMessage()));
+    }
+
+    private ErrorResponseDto buildError(HttpStatus status, String message) {
+        return ErrorResponseDto.builder()
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 }
