@@ -9,15 +9,18 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
-    @Mapping(target = "author", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "borrowRecords", ignore = true)
     Book toEntity(BookRequestDto dto);
 
-    @Mapping(source = "author.fullName",
-            target = "authorName")
+    @Mapping(source = "author.fullName", target = "authorName")
     BookResponseDto toDto(Book book);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "borrowRecords", ignore = true)
     void updateEntity(BookRequestDto dto, @MappingTarget Book book);
 }

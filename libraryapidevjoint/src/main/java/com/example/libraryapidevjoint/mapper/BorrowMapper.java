@@ -5,10 +5,9 @@ import com.example.libraryapidevjoint.entity.BorrowRecord;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel ="spring" )
+@Mapper(componentModel = "spring")
 public interface BorrowMapper {
-    @Mapping(target = "bookTitle", source = "book.title")
-    @Mapping(target = "userEmail", source = "user.email")
+    @Mapping(target = "bookId", source = "book.id")
+    @Mapping(target = "userId", source = "user.id")
     BorrowRecordResponseDto toDto(BorrowRecord borrowRecord);
-
 }
