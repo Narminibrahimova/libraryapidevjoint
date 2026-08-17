@@ -13,16 +13,22 @@ public interface BookService {
     BookResponseDto update(Long id, BookRequestDto bookRequestDto);
     void delete(Long id);
 
-    List<BookResponseDto> filterBooks(
+    Page<BookResponseDto> filterBooks(
             String title,
             String author,
             String category,
-            Double minPrice
+            Double minPrice,
+            int page,
+            int size,
+            String sortBy
     );
-    List<BookResponseDto> searchBooks(
+    Page<BookResponseDto> searchBooks(
             String title,
             String author,
             String category,
-            Double minPrice
+            Double minPrice,
+            int page,
+            int size,
+            String sortBy
     );
 }

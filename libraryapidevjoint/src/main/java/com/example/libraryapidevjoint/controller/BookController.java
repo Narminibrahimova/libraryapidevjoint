@@ -116,37 +116,56 @@ public class BookController {
 
 
 
+    @Operation(
+            summary = "Filter books",
+            description = "Returns paginated filtered books by title, author, category, or minPrice"
+    )
     @GetMapping("/filter")
-    public ResponseEntity<List<BookResponseDto>> filterBooks(
+    public ResponseEntity<Page<BookResponseDto>> filterBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) Double minPrice
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy
     ) {
         return ResponseEntity.ok(
                 bookService.filterBooks(
                         title,
                         author,
                         category,
-                        minPrice
+                        minPrice,
+                        page,
+                        size,
+                        sortBy
                 )
         );
     }
 
-
+    @Operation(
+            summary = "Search books",
+            description = "Returns paginated searched books using JPA Specification"
+    )
     @GetMapping("/search")
-    public ResponseEntity<List<BookResponseDto>> searchBooks(
+    public ResponseEntity<Page<BookResponseDto>> searchBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) Double minPrice
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy
     ) {
         return ResponseEntity.ok(
                 bookService.searchBooks(
                         title,
                         author,
                         category,
-                        minPrice
+                        minPrice,
+                        page,
+                        size,
+                        sortBy
                 )
         );
     }

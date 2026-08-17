@@ -18,7 +18,7 @@ public interface BookRepository extends JpaRepository<Book,Long>, JpaSpecificati
     List<Book> findByPriceGreaterThanEqual(double price);
     List<Book> findByCategoriesNameIgnoreCase(String categoryName);
 
-    @Query("""
+    @Query(value = """
    SELECT DISTINCT b
    FROM Book b
    LEFT JOIN b.author a
@@ -27,12 +27,23 @@ public interface BookRepository extends JpaRepository<Book,Long>, JpaSpecificati
    AND (:author IS NULL OR LOWER(a.fullName) LIKE LOWER(CONCAT('%', :author, '%')))
    AND (:category IS NULL OR LOWER(c.name) = LOWER(:category))
    AND (:minPrice IS NULL OR b.price >= :minPrice)
+""",
+   countQuery = """
+   SELECT COUNT(DISTINCT b)
+   FROM Book b
+   LEFT JOIN b.author a
+   LEFT JOIN b.categories c
+   WHERE (:title IS NULL OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')))
+   AND (:author IS NULL OR LOWER(a.fullName) LIKE LOWER(CONCAT('%', :author, '%')))
+   AND (:category IS NULL OR LOWER(c.name) = LOWER(:category))
+   AND (:minPrice IS NULL OR b.price >= :minPrice)
 """)
-    List<Book> filterBooks(
+    Page<Book> filterBooks(
             @Param("title") String title,
             @Param("author") String author,
             @Param("category") String category,
-            @Param("minPrice") Double minPrice
+            @Param("minPrice") Double minPrice,
+            Pageable pageable
     );
 
 

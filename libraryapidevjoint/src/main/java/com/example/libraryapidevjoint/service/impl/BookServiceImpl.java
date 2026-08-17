@@ -102,38 +102,42 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponseDto> filterBooks(
+    public Page<BookResponseDto> filterBooks(
             String title,
             String author,
             String category,
-            Double minPrice) {
-
-        List<Book> books = bookRepository.filterBooks(
+            Double minPrice,
+            int page,
+            int size,
+            String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<Book> books = bookRepository.filterBooks(
                 title,
                 author,
                 category,
-                minPrice
+                minPrice,
+                pageable
         );
-        return books.stream()
-                .map(bookMapper::toDto)
-                .toList();
+        return books.map(bookMapper::toDto);
     }
 
     @Override
-    public List<BookResponseDto> searchBooks(
+    public Page<BookResponseDto> searchBooks(
             String title,
             String author,
             String category,
-            Double minPrice) {
+            Double minPrice,
+            int page,
+            int size,
+            String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         Specification<Book> specification =
                 Specification
                         .where(hasTitle(title))
                         .and(hasAuthor(author))
                         .and(hasCategory(category))
                         .and(hasMinimumPrice(minPrice));
-        List<Book> books = bookRepository.findAll(specification);
-        return books.stream()
-                .map(bookMapper::toDto)
-                .toList();
+        Page<Book> books = bookRepository.findAll(specification, pageable);
+        return books.map(bookMapper::toDto);
     }
 }

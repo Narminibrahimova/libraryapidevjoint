@@ -23,6 +23,9 @@ public class BookSpecification {
             if (author == null || author.isBlank()) {
                 return cb.conjunction();
             }
+            if (query != null) {
+                query.distinct(true);
+            }
             Join<Object, Object> authorJoin =
                     root.join("author", JoinType.LEFT);
             return cb.like(
@@ -36,6 +39,9 @@ public class BookSpecification {
         return (root, query, cb) -> {
             if (category == null || category.isBlank()) {
                 return cb.conjunction();
+            }
+            if (query != null) {
+                query.distinct(true);
             }
             Join<Object, Object> categoryJoin =
                     root.join("categories", JoinType.LEFT);
