@@ -13,6 +13,8 @@ import com.example.libraryapidevjoint.repository.CategoryRepository;
 import com.example.libraryapidevjoint.service.BookService;
 import lombok.*;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -60,14 +62,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Cacheable(value = "books", key = "#id")
     public BookResponseDto getById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Book not found"));
         return bookMapper.toDto(book);
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = "books", key = "#id")
     public BookResponseDto update(Long id, BookRequestDto bookRequestDto) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
@@ -87,6 +92,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "books", key = "#id")
     public void delete(Long id) {
         if (!bookRepository.existsById(id)) {
             throw new ResourceNotFoundException("Book not found");
