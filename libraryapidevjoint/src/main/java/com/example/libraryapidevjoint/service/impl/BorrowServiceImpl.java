@@ -13,6 +13,7 @@ import com.example.libraryapidevjoint.repository.BookRepository;
 import com.example.libraryapidevjoint.repository.BorrowRecordRepository;
 import com.example.libraryapidevjoint.repository.UserRepository;
 import com.example.libraryapidevjoint.service.BorrowService;
+import com.example.libraryapidevjoint.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class BorrowServiceImpl implements BorrowService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BorrowMapper borrowMapper;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -55,6 +57,10 @@ public class BorrowServiceImpl implements BorrowService {
                 .build();
         BorrowRecord savedBorrowRecord =
                 borrowRecordRepository.save(borrowRecord);
+        notificationService.sendBorrowNotification(
+                user.getEmail(),
+                book.getTitle()
+        );
         return borrowMapper.toDto(savedBorrowRecord);
     }
 
